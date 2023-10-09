@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 
 function clonarArchivoDefault(subdomain, port) {
   const archivoDefault = 'default.conf'; // Nombre del archivo default
-  const nuevoNombre = `${subdomain}.site`; // Nombre del archivo clonado
+  const nuevoNombre = `${subdomain}.armortemplate.site`; // Nombre del archivo clonado
   const rutaDestino = `/etc/nginx/sites-enabled/${nuevoNombre}`; // Ruta de destino
 
   // Leer el contenido del archivo default
