@@ -40,4 +40,4 @@ axios(config)
   });
 }
 
-  export default crearSubdominio;
+  exports.crearSubdominio = crearSubdominio;
