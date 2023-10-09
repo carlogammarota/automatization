@@ -6,7 +6,7 @@ const app = express();
 const port = 2323;
 const path = require('path');
 const fs = require('fs');
-const crearSubdominio = require('./crearSubdominio');
+// const crearSubdominio = require('./crearSubdominio');
 
 app.use(express.json());
 app.use(bodyParser.json());
@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 
 function clonarArchivoDefault(subdomain, port) {
   const archivoDefault = 'default.conf'; // Nombre del archivo default
-  const nuevoNombre = `${subdomain}_${port}.site`; // Nombre del archivo clonado
+  const nuevoNombre = `${subdomain}.site`; // Nombre del archivo clonado
   const rutaDestino = `/etc/nginx/sites-enabled/${nuevoNombre}`; // Ruta de destino
 
   // Leer el contenido del archivo default
