@@ -52,11 +52,11 @@ app.post('/build-and-create', (req, res) => {
   console.log(req.body);
 
   // Definir las variables necesarias
-  const imageName = 'mi-contenedor-con-docker-compose:latest'; // Reemplaza con el nombre de tu imagen
+  const imageName = 'mi-app:latest'; // Reemplaza con el nombre de tu imagen
   // const exposedPort = '1313'; // Reemplaza con el puerto que deseas exponer
 
   // Comando para construir la imagen Docker desde el Dockerfile
-  const buildCommand = `docker run -d --name ${containerName} -p ${hostPort}:2222 mi-contenedor-con-docker-compose:latest`;
+  const buildCommand = `docker run -d --name ${containerName} -p ${hostPort}:2222 mi-app:latest`;
 
   exec(buildCommand, (error, stdout, stderr) => {
     if (error) {
