@@ -68,6 +68,7 @@ app.post('/build-and-create', (req, res) => {
       //aca hay que crear el subdominio 
       // Ejemplo de uso:
       clonarArchivoDefault(subdomain, hostPort);
+      crearSubdominio(subdomain);
 
       return res.send('Imagen Docker construida con éxito');
 
