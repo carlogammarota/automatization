@@ -89,7 +89,8 @@ async function crearSubdominioCloudFlare(subdomain) {
 }
 
 app.post("/build-and-create", async (req, res) => {
-  let { hostPort, containerName, subdomain } = req.body;
+  let { hostPort, subdomain } = req.body;
+  const containerName = subdomain;
   const buildCommand = `docker run -d --name ${containerName} -p ${hostPort}:2222 mi-app:latest`;
 
   try {
