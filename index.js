@@ -11,6 +11,12 @@ const port = 2323;
 app.use(express.json());
 app.use(bodyParser.json());
 
+// Middleware para manejar errores
+app.use((err, req, res, next) => {
+    console.error(err); // Imprime el error en la consola
+    res.status(500).send('Error interno del servidor'); // Responde con un mensaje de error
+  });
+
 // Contraseña maestra
 const masterPassword = 'contraseña_maestra';    
 
