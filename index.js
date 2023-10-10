@@ -23,6 +23,7 @@ function checkMasterPassword(req, res, next) {
       next();
     } else {
       // La contraseña es incorrecta, devuelve un error 401 (No autorizado)
+      
       res.status(401).json({ message: 'Contraseña incorrecta' });
     }
   }
@@ -46,7 +47,7 @@ async function clonarArchivoDominioDefault(subdomain, port) {
     console.log(`Archivo movido a ${rutaDestino} con éxito.`);
   } catch (error) {
     console.error(`Error al clonar el archivo: ${error}`);
-    //throw new Error("Error al clonar el archivo");
+    throw new Error("Error al clonar el archivo");
   }
 }
 async function recargarNginx() {
@@ -58,6 +59,7 @@ async function recargarNginx() {
       console.error(`Errores: ${stderr}`);
     } catch (error) {
       console.error(`Error al recargar Nginx: ${error}`);
+      throw new Error("Error al recargar Nginx:", error);
       //throw new Error("Error al recargar Nginx");
     }
   }
@@ -124,6 +126,7 @@ app.post("/build-and-create", checkMasterPassword, async (req, res) => {
   } catch (error) {
     console.error("Error general:", error);
     res.status(500).send("Error general: " + error.message);
+    throw new Error("Error general:", error);
   }
 });
 
