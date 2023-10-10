@@ -71,7 +71,7 @@ function recargarNginx() {
   });
 }
 
-function crearSubdominio(subdomain, port) {
+function crearSubdominioCloudFlare(subdomain, port) {
   const zoneId = "22ba6192a10c766dd77527c7a101ad35"; // Reemplaza con tu ID de zona
   const apiKey = "9ed98c1d2991f51503bd165e5d61924cae9d4";
   const authEmail = "carlo.gammarota@gmail.com";
@@ -111,25 +111,30 @@ function crearSubdominio(subdomain, port) {
         "Error al agregar el registro DNS:",
         error.response.data
       );
-      return res.status(500).send("Error al agregar el registro DNS (CloudFlare)");
+      return res.status(500).send("Error al agregar el registro DNS (CloudFlare)", error.response.data);
     });
 }
 
 app.post("/build-and-create", (req, res) => {
   let { hostPort, containerName, subdomain } = req.body;
 
+  
+
   const buildCommand = `docker run -d --name ${containerName} -p ${hostPort}:2222 mi-app:latest`;
+
+  crearSubdominioCloudFlare(subdomain, hostPort);
+  clonarArchivoDominioDefault(subdomain, hostPort);
+  
 
   exec(buildCommand, (error, stdout, stderr) => {
     if (error) {
       console.error("Error al construir la imagen Docker:", error);
-      res.status(500).send("Error al construir la imagen Docker");
+      res.status(500).send("Error al construir la imagen Docker", error);
     } else {
       console.log("Imagen Docker construida con éxito");
 
-      //creamos subdominio
-      clonarArchivoDominioDefault(subdomain, hostPort);
-      crearSubdominio(subdomain, hostPort);
+      
+      
 
       // Llama a la función para recargar Nginx
       recargarNginx();
