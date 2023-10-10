@@ -93,6 +93,9 @@ async function recargarNginx() {
     } catch (error) {
       console.error("Error al agregar el registro DNS:", error.errors);
     //   return
+    //mostrar error pero no detener el proceso
+        
+
     //   return res.status(500).send({
     //     message: "Error al agregar el registro DNS (CloudFlare)",
     //     error: error,
