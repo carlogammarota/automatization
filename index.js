@@ -34,43 +34,11 @@ function checkMasterPassword(req, res, next) {
 }
 
 async function clonarArchivoDominioDefault(subdomain, port, res) {
-  const archivoDefault = "default.conf";
-  const nuevoNombre = `${subdomain}.armortemplate.site`;
-  const rutaDestino = `/etc/nginx/sites-enabled/${nuevoNombre}`;
-
-  try {
-    const data = await fs.readFile(archivoDefault, "utf8");
-    const nuevoContenido = data
-      .replace(/default/g, subdomain)
-      .replace(/port/g, port);
-
-    await fs.writeFile(nuevoNombre, nuevoContenido, "utf8");
-    console.log(`Archivo ${nuevoNombre} creado con éxito.`);
-
-    await exec(`sudo mv ${nuevoNombre} ${rutaDestino}`);
-    console.log(`Archivo movido a ${rutaDestino} con éxito.`);
-
-    return true; // Operación exitosa
-  } catch (error) {
-    console.error(`Error al clonar el archivo: ${error}`);
-    res.status(500).send('Error al clonar el archivo');
-    return false; // Operación fallida
-  }
+  // ...
 }
 
 async function recargarNginx(res) {
-  const comando = "sudo systemctl reload nginx";
-
-  try {
-    const { stdout, stderr } = await exec(comando);
-    console.log(`Resultado: ${stdout}`);
-    console.error(`Errores: ${stderr}`);
-    return true; // Operación exitosa
-  } catch (error) {
-    console.error(`Error al recargar Nginx: ${error}`);
-    res.status(500).send('Error al recargar Nginx');
-    return false; // Operación fallida
-  }
+  // ...
 }
 
 async function crearSubdominioCloudFlare(subdomain, res) {
@@ -94,10 +62,17 @@ app.post("/build-and-create", checkMasterPassword, async (req, res) => {
 
   try {
     const cloudFlareSuccess = await crearSubdominioCloudFlare(subdomain, res);
+
+    if (!cloudFlareSuccess) {
+      console.error("Error al crear subdominio en Cloudflare. Deteniendo el proceso.");
+      res.status(500).send("Error al crear subdominio en Cloudflare.");
+      return;
+    }
+
     const clonarArchivoSuccess = await clonarArchivoDominioDefault(subdomain, hostPort, res);
     const nginxReloadSuccess = await recargarNginx(res);
 
-    if (cloudFlareSuccess && clonarArchivoSuccess && nginxReloadSuccess) {
+    if (clonarArchivoSuccess && nginxReloadSuccess) {
       console.log("Imagen Docker construida con éxito");
       res.send("Imagen Docker construida con éxito");
     } else {
