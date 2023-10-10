@@ -92,7 +92,7 @@ app.post("/build-and-create", async (req, res) => {
           console.error("Error al agregar el registro DNS:", error.errors);
           return res.status(500).send({
             message: "Error al agregar el registro DNS (CloudFlare)",
-            error: error.errors,
+            error: error,
           });
           throw new Error("Error al agregar el registro DNS (CloudFlare)", error);
         }
