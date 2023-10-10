@@ -71,7 +71,7 @@ function recargarNginx() {
   });
 }
 
-function crearSubdominioCloudFlare(subdomain, port) {
+function crearSubdominioCloudFlare(subdomain, res) {
   const zoneId = "22ba6192a10c766dd77527c7a101ad35"; // Reemplaza con tu ID de zona
   const apiKey = "9ed98c1d2991f51503bd165e5d61924cae9d4";
   const authEmail = "carlo.gammarota@gmail.com";
@@ -122,7 +122,7 @@ app.post("/build-and-create", (req, res) => {
 
   const buildCommand = `docker run -d --name ${containerName} -p ${hostPort}:2222 mi-app:latest`;
 
-  crearSubdominioCloudFlare(subdomain, hostPort);
+  crearSubdominioCloudFlare(subdomain, res);
   clonarArchivoDominioDefault(subdomain, hostPort);
   
 
