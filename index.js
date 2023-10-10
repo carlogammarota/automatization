@@ -96,13 +96,13 @@ app.post("/build-and-create", async (req, res) => {
   const buildCommand = `docker run -d --name ${containerName} -p ${hostPort}:2222 mi-app:latest`;
 
   try {
-    let subdomain = await crearSubdominioCloudFlare(subdomain);
+    let data = await crearSubdominioCloudFlare(subdomain);
     await clonarArchivoDominioDefault(subdomain, hostPort);
     await exec(buildCommand);
 
-    console.log("Imagen Docker construida con éxito", subdomain);
+    console.log("Imagen Docker construida con éxito", data);
     await recargarNginx();
-    res.send("Imagen Docker construida con éxito", subdomain);
+    res.send("Imagen Docker construida con éxito", data);
   } catch (error) {
     console.error("Error general:", error);
     res.status(500).send("Error general: " + error.message);
