@@ -46,12 +46,10 @@ async function clonarArchivoDominioDefault(subdomain, port) {
     console.log(`Archivo movido a ${rutaDestino} con éxito.`);
   } catch (error) {
     console.error(`Error al clonar el archivo: ${error}`);
-    throw new Error("Error al clonar el archivo");
+    //throw new Error("Error al clonar el archivo");
   }
 }
-
-app.post("/build-and-create", checkMasterPassword, async (req, res) => {
-  async function recargarNginx() {
+async function recargarNginx() {
     const comando = "sudo systemctl reload nginx";
 
     try {
@@ -60,7 +58,7 @@ app.post("/build-and-create", checkMasterPassword, async (req, res) => {
       console.error(`Errores: ${stderr}`);
     } catch (error) {
       console.error(`Error al recargar Nginx: ${error}`);
-      throw new Error("Error al recargar Nginx");
+      //throw new Error("Error al recargar Nginx");
     }
   }
   async function crearSubdominioCloudFlare(subdomain) {
@@ -98,9 +96,12 @@ app.post("/build-and-create", checkMasterPassword, async (req, res) => {
         message: "Error al agregar el registro DNS (CloudFlare)",
         error: error,
       });
-      //   throw new Error("Error al agregar el registro DNS (CloudFlare)", error);
+      //   //throw new Error("Error al agregar el registro DNS (CloudFlare)", error);
     }
   }
+
+
+app.post("/build-and-create", checkMasterPassword, async (req, res) => {
 
   let { hostPort, subdomain } = req.body.data;
   let { password } = req.body;
