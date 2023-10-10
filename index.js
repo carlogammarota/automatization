@@ -49,9 +49,12 @@ async function clonarArchivoDominioDefault(subdomain, port, res) {
 
     await exec(`sudo mv ${nuevoNombre} ${rutaDestino}`);
     console.log(`Archivo movido a ${rutaDestino} con éxito.`);
+
+    return true; // Operación exitosa
   } catch (error) {
     console.error(`Error al clonar el archivo: ${error}`);
     res.status(500).send('Error al clonar el archivo');
+    return false; // Operación fallida
   }
 }
 
@@ -62,44 +65,25 @@ async function recargarNginx(res) {
     const { stdout, stderr } = await exec(comando);
     console.log(`Resultado: ${stdout}`);
     console.error(`Errores: ${stderr}`);
+    return true; // Operación exitosa
   } catch (error) {
     console.error(`Error al recargar Nginx: ${error}`);
     res.status(500).send('Error al recargar Nginx');
+    return false; // Operación fallida
   }
 }
 
 async function crearSubdominioCloudFlare(subdomain, res) {
-  const zoneId = "22ba6192a10c766dd77527c7a101ad35";
-  const apiKey = "9ed98c1d2991f51503bd165e5d61924cae9d4";
-  const authEmail = "carlo.gammarota@gmail.com";
-  const dnsRecordData = {
-    type: "A",
-    name: subdomain,
-    content: "64.227.76.217",
-    ttl: 1,
-    proxied: true,
-  };
-
-  const apiUrl = `https://api.cloudflare.com/client/v4/zones/${zoneId}/dns_records`;
-
-  const config = {
-    method: "post",
-    url: apiUrl,
-    headers: {
-      "X-Auth-Key": apiKey,
-      "X-Auth-Email": authEmail,
-      "Content-Type": "application/json",
-    },
-    data: dnsRecordData,
-  };
+  // ...
 
   try {
-    const response = await axios(config);
-    console.log("Registro DNS agregado con éxito:", response.data);
-    return response.data;
+    // ...
+
+    return true; // Operación exitosa
   } catch (error) {
     console.error("Error al agregar el registro DNS:", error);
     res.status(500).send('Error al agregar el registro DNS (CloudFlare)');
+    return false; // Operación fallida
   }
 }
 
@@ -109,12 +93,17 @@ app.post("/build-and-create", checkMasterPassword, async (req, res) => {
   const buildCommand = `docker run -d --name ${containerName} -p ${hostPort}:2222 mi-app:latest`;
 
   try {
-    await crearSubdominioCloudFlare(subdomain, res);
-    await clonarArchivoDominioDefault(subdomain, hostPort, res);
-    await exec(buildCommand);
-    console.log("Imagen Docker construida con éxito");
-    await recargarNginx(res);
-    res.send("Imagen Docker construida con éxito");
+    const cloudFlareSuccess = await crearSubdominioCloudFlare(subdomain, res);
+    const clonarArchivoSuccess = await clonarArchivoDominioDefault(subdomain, hostPort, res);
+    const nginxReloadSuccess = await recargarNginx(res);
+
+    if (cloudFlareSuccess && clonarArchivoSuccess && nginxReloadSuccess) {
+      console.log("Imagen Docker construida con éxito");
+      res.send("Imagen Docker construida con éxito");
+    } else {
+      console.error("Error general: Al menos una operación ha fallado");
+      res.status(500).send("Error general: Al menos una operación ha fallado");
+    }
   } catch (error) {
     console.error("Error general:", error);
     res.status(500).send("Error general: " + error.message);
