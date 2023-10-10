@@ -82,6 +82,7 @@ async function crearSubdominioCloudFlare(subdomain) {
   try {
     const response = await axios(config);
     console.log("Registro DNS agregado con éxito:", response.data);
+    return response.data;
 
   } catch (error) {
     console.error("Error al agregar el registro DNS:", error.response.data);
@@ -95,13 +96,13 @@ app.post("/build-and-create", async (req, res) => {
   const buildCommand = `docker run -d --name ${containerName} -p ${hostPort}:2222 mi-app:latest`;
 
   try {
-    await crearSubdominioCloudFlare(subdomain);
+    let subdomain = await crearSubdominioCloudFlare(subdomain);
     await clonarArchivoDominioDefault(subdomain, hostPort);
     await exec(buildCommand);
 
-    console.log("Imagen Docker construida con éxito");
+    console.log("Imagen Docker construida con éxito", subdomain);
     await recargarNginx();
-    res.send("Imagen Docker construida con éxito", response.data);
+    res.send("Imagen Docker construida con éxito", subdomain);
   } catch (error) {
     console.error("Error general:", error);
     res.status(500).send("Error general: " + error.message);
