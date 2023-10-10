@@ -84,7 +84,7 @@ async function crearSubdominioCloudFlare(subdomain) {
     console.log("Registro DNS agregado con éxito:", response.data);
   } catch (error) {
     console.error("Error al agregar el registro DNS:", error.response.data);
-    throw new Error("Error al agregar el registro DNS (CloudFlare)");
+    throw new Error("Error al agregar el registro DNS (CloudFlare)", error);
   }
 }
 
