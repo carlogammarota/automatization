@@ -54,7 +54,7 @@ async function recargarNginx() {
 
 async function crearSubdominioCloudFlare(subdomain) {
   const zoneId = "22ba6192a10c766dd77527c7a101ad35";
-  const apiKey = "9ed98c1d2991f51503bd165e5d61924cae9d4";
+  const apiKey = "77543657f985f75834e7951b022638892bddc";
   const authEmail = "carlo.gammarota@gmail.com";
   const dnsRecordData = {
     type: "A",
